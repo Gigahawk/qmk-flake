@@ -104,11 +104,11 @@
     "qmk-userspace": {
       "flake": false,
       "locked": {
-        "lastModified": 1772667385,
-        "narHash": "sha256-ilTC2wUbLWbfL0n1ACxDB7/FGY+83nOz/q3LSOH5Jw0=",
+        "lastModified": 1772712654,
+        "narHash": "sha256-2xgVy8jyM4mXqJhnKtv3FDZTAe8hddSwBk1OHgrXORo=",
         "ref": "personal",
-        "rev": "82c406ad110b347ea3e508bb2c13c0eecdb5d537",
-        "revCount": 12,
+        "rev": "7a39fafb1ac65677ca7b2de329887e5a498e085c",
+        "revCount": 14,
         "type": "git",
         "url": "https://github.com/Gigahawk/qmk_userspace.git"
       },

@@ -8,6 +8,7 @@
   km ? "default",
   qmk-fw,
   qmk-userspace ? null,
+  copy-userspace ? false,
   ...
 }:
 let
@@ -48,16 +49,23 @@ stdenv.mkDerivation rec {
     qmk setup -y
     ${
       if qmk-userspace != null then
-        ''
-          echo "Setting userspace to ${qmk-userspace}"
-          qmk config user.overlay_dir="${qmk-userspace}"
-        ''
+        if copy-userspace then
+          ''
+            echo "Copying layouts from userspace ${qmk-userspace}"
+            cp -r ${qmk-userspace}/keyboards/* ./keyboards
+          ''
+        else
+          ''
+            echo "Setting userspace to ${qmk-userspace}"
+            qmk config user.overlay_dir="${qmk-userspace}"
+          ''
       else
         ""
     }
   '';
 
   buildPhase = ''
+    echo "Building keymap ${km} for keyboard ${kb}"
     qmk compile -kb ${kb} -km ${km}
     mkdir -p $out
     cp ${binName} $out
