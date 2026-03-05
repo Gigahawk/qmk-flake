@@ -1,0 +1,69 @@
+name: build
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      manifest: ${{ steps.manifest.outputs.manifest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v34
+        with:
+          nix_version: "2.31.2"
+      - name: Restore and cache Nix store
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: cache-build-${{ runner.os }}-nix-store-${{ hashFiles('**/*.nix') }}
+          restore-prefixes-first-match: cache-build-${{ runner.os }}-nix-store-
+      - name: Export manifest
+        run: |
+          nix flake show --json | jq -c '.packages["x86_64-linux"] | keys' > manifest.json
+      - run: cat manifest.json
+      - name: Save manifest to output
+        id: manifest
+        run: |
+          echo "manifest=$(cat manifest.json)" >> "$GITHUB_OUTPUT"
+  build-matrix:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg_name: ${{ fromJSON(needs.prepare.outputs.manifest) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: true
+      - name: Cache date
+        run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> "$GITHUB_ENV"
+      - name: Filename friendly date
+        run: echo "BUILD_DATE=$(echo "$DATE" | sed -r -e 's/:/./g' -e 's/ /_/g')" >> "$GITHUB_ENV"
+      - name: Store branch name
+        run: echo "BUILD_BRANCH=${GITHUB_REF##*/}" >> "$GITHUB_ENV"
+      - name: Store commit hash
+        run: echo "BUILD_COMMIT=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+      - name: Generate output name
+        run: |
+          echo "NAME=${BUILD_DATE}_${BUILD_BRANCH}_${BUILD_COMMIT}_object_${{ matrix.pkg_name }}_bin" >> "$GITHUB_ENV"
+      - name: Install Nix
+        uses: nixbuild/nix-quick-install-action@v34
+        with:
+          nix_version: "2.31.2"
+      - name: Restore and cache Nix store
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: cache-build-${{ runner.os }}-nix-store-${{ hashFiles('**/*.nix') }}
+          restore-prefixes-first-match: cache-build-${{ runner.os }}-nix-store-
+      - name: Build firmware
+        run: nix build .#${{ matrix.pkg_name }}
+      - name: Archive objects
+        # Skip archive if running on act
+        if: ${{ !env.ACT }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.NAME }}
+          path: result
