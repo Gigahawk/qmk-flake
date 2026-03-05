@@ -5,7 +5,7 @@
   git,
 
   kb,
-  km,
+  km ? "default",
   qmk-fw,
   qmk-userspace ? null,
   ...

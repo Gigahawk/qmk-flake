@@ -9,7 +9,7 @@
       build-kb =
         {
           kb,
-          km,
+          km ? "default",
           qmk-fw ? inputs.qmk-fw,
           qmk-userspace ? inputs.qmk-userspace,
         }:
