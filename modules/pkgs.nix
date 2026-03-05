@@ -28,6 +28,10 @@
           kb = "gmmk/pro/rev1/ansi";
           km = "gigahawk";
         };
+        keychron-k3-pro = build-kb {
+          qmk-fw = inputs.qmk-fw-keychron;
+          kb = "keychron/k3_pro/ansi/rgb";
+        };
       };
     };
 }

@@ -82,6 +82,25 @@
         "url": "https://github.com/qmk/qmk_firmware.git"
       }
     },
+    "qmk-fw-keychron": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1733563085,
+        "narHash": "sha256-bMhaYCWKX8REFHfHtiuTiTfsbStUouLrRBqbu8OIq/I=",
+        "ref": "bluetooth_playground",
+        "rev": "618127a725a1773e85f13455602cf6f72ab4de17",
+        "revCount": 23530,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/Keychron/qmk_firmware.git"
+      },
+      "original": {
+        "ref": "bluetooth_playground",
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/Keychron/qmk_firmware.git"
+      }
+    },
     "qmk-userspace": {
       "flake": false,
       "locked": {
@@ -105,6 +124,7 @@
         "import-tree": "import-tree",
         "nixpkgs": "nixpkgs",
         "qmk-fw": "qmk-fw",
+        "qmk-fw-keychron": "qmk-fw-keychron",
         "qmk-userspace": "qmk-userspace",
         "treefmt-nix": "treefmt-nix"
       }

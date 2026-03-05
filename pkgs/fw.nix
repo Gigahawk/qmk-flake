@@ -36,6 +36,13 @@ stdenv.mkDerivation rec {
     chmod -R u+w qmk-fw
   '';
 
+  patchPhase = ''
+    # Disable env check
+    substituteInPlace qmk-fw/lib/python/qmk/cli/__init__.py \
+      --replace-fail "if _broken_module_imports('requirements.txt'):" \
+        "if False:"
+  '';
+
   configurePhase = ''
     cd qmk-fw
     qmk setup -y
@@ -57,4 +64,6 @@ stdenv.mkDerivation rec {
   '';
 
   dontInstall = true;
+
+  dontFixup = true;
 }

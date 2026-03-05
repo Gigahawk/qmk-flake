@@ -17,6 +17,13 @@
       type = "git";
       submodules = true;
     };
+    qmk-fw-keychron = {
+      url = "https://github.com/Keychron/qmk_firmware.git";
+      ref = "bluetooth_playground";
+      flake = false;
+      type = "git";
+      submodules = true;
+    };
     qmk-userspace = {
       url = "https://github.com/Gigahawk/qmk_userspace.git";
       ref = "personal";
